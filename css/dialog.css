@@ -1,0 +1,105 @@
+.token-dialog {
+  width: min(92vw, 520px);
+  padding: 0;
+  border: 1px solid var(--border-bright);
+  border-radius: 16px;
+  color: var(--text);
+  background: #171b21;
+  box-shadow: 0 28px 100px rgba(0, 0, 0, 0.65);
+}
+
+.token-dialog::backdrop {
+  background: rgba(5, 7, 9, 0.72);
+  backdrop-filter: blur(7px);
+}
+
+.token-dialog form {
+  padding: 27px;
+}
+
+.dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.dialog-head h2 {
+  margin: 8px 0 0;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+}
+
+.dialog-close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 19px;
+}
+
+.token-dialog form > p {
+  margin: 18px 0 23px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.token-dialog input {
+  width: 100%;
+  height: 48px;
+  padding: 0 13px;
+  border: 1px solid var(--border-bright);
+  border-radius: 9px;
+  outline: 0;
+  color: var(--text);
+  background: #101318;
+  font: 400 12px/1 var(--mono);
+}
+
+.token-dialog input:focus {
+  border-color: var(--accent);
+}
+
+.token-dialog .privacy-note {
+  margin: 9px 0 0;
+  color: var(--faint);
+  font: 400 9px/1.5 var(--mono);
+}
+
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.danger-button {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 138, 107, 0.22);
+  border-radius: 8px;
+  color: #ffad96;
+  background: rgba(255, 138, 107, 0.04);
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

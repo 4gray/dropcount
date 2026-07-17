@@ -1,0 +1,253 @@
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    min-height: auto;
+  }
+
+  .hero-copy > p {
+    max-width: 620px;
+  }
+
+  .repo-loader {
+    max-width: 720px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .breakdown-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .breakdown-panel:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .asset-row {
+    grid-template-columns: minmax(250px, 2.2fr) minmax(85px, 0.8fr) minmax(75px, 0.7fr) minmax(145px, 1fr);
+  }
+
+  .asset-row > :nth-child(4) {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    padding: 0 18px;
+  }
+
+  .site-header {
+    height: 80px;
+  }
+
+  .brand small {
+    display: none;
+  }
+
+  .hero {
+    padding: 58px 0 56px;
+  }
+
+  .hero h1 {
+    font-size: clamp(44px, 13vw, 64px);
+  }
+
+  .repo-loader {
+    padding: 88px 18px 18px;
+  }
+
+  .repo-mascot {
+    top: -42px;
+    right: 18px;
+    width: 112px;
+  }
+
+  .github-prefix {
+    display: none;
+  }
+
+  .input-row input {
+    padding-left: 9px;
+  }
+
+  .loader-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .global-filters {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .control-field select,
+  .scope-field select {
+    width: 100%;
+    max-width: none;
+  }
+
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .breakdown-panel:last-child {
+    grid-column: auto;
+  }
+
+  .leaderboard-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .leaderboard-tools {
+    width: 100%;
+  }
+
+  .search-field {
+    flex: 1;
+  }
+
+  .search-field input {
+    width: 100%;
+  }
+
+  .asset-table {
+    overflow-x: auto;
+  }
+
+  .asset-row {
+    min-width: 620px;
+  }
+
+  footer {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-mark {
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .brand-mark {
+    width: 38px;
+    height: 38px;
+  }
+
+  .token-trigger {
+    padding-right: 0;
+  }
+
+  .input-row {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 5px;
+  }
+
+  .input-row input {
+    width: 100%;
+    min-height: 45px;
+  }
+
+  .input-row .primary-button {
+    width: 100%;
+  }
+
+  .global-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-card {
+    min-height: 135px;
+  }
+
+  .panel-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .version-panel,
+  .leaderboard-panel,
+  .releases-panel,
+  .breakdown-panel {
+    padding: 18px;
+  }
+
+  .segmented {
+    width: 100%;
+  }
+
+  .segmented button {
+    flex: 1;
+  }
+
+  .leaderboard-tools {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .asset-table {
+    overflow-x: hidden;
+  }
+
+  .asset-row {
+    min-width: 0;
+    grid-template-columns: minmax(125px, 1.7fr) minmax(58px, 0.7fr) minmax(68px, 0.8fr);
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .asset-row > :nth-child(3),
+  .asset-row > :nth-child(4) {
+    display: none;
+  }
+
+  .asset-name {
+    padding-right: 4px;
+  }
+
+  .download-cell {
+    grid-template-columns: 1fr;
+  }
+
+  .download-cell .mini-track {
+    display: none;
+  }
+
+  .row-limit {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+  }
+
+  .row-limit select {
+    width: 100%;
+  }
+
+  .token-trigger > span:last-child {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

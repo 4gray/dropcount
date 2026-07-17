@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Dropcount — client-side GitHub release download analytics." />
+    <meta name="theme-color" content="#0f1216" />
+    <meta name="application-name" content="Dropcount" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Dropcount — GitHub release analytics</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./assets/icons/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="./assets/icons/favicon-32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="./assets/icons/favicon-16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="Dropcount home">
+          <img class="brand-mark" src="./assets/icons/icon-192.png" alt="" width="42" height="42" />
+          <span>
+            <strong>Dropcount</strong>
+            <small>GitHub download analytics</small>
+          </span>
+        </a>
+        <button class="token-trigger" id="token-trigger" type="button" aria-haspopup="dialog" aria-label="Add optional GitHub token">
+          <span aria-hidden="true">⌘</span>
+          <span id="token-trigger-label">Add token</span>
+        </button>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="page-title">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="eyebrow-line"></span> Release telemetry</div>
+            <h1 id="page-title">Downloads, decoded.</h1>
+            <p>
+              See which releases, platforms, and packages people actually download—directly from GitHub, with no backend.
+            </p>
+          </div>
+
+          <form class="repo-loader" id="repo-form" novalidate>
+            <img
+              class="repo-mascot"
+              src="./assets/branding/dropcount-mascot.webp"
+              alt=""
+              width="148"
+              height="171"
+              decoding="async"
+              aria-hidden="true"
+            />
+            <label for="repo-input">Public repository</label>
+            <div class="input-row">
+              <span class="github-prefix" aria-hidden="true">github.com/</span>
+              <input
+                id="repo-input"
+                name="repository"
+                type="text"
+                inputmode="url"
+                autocomplete="off"
+                autocapitalize="none"
+                spellcheck="false"
+                placeholder="owner/repository"
+                value="4gray/iptvnator"
+                aria-describedby="repo-help"
+              />
+              <button class="primary-button" id="load-button" type="submit">
+                <span>Load data</span><span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <div class="loader-meta" id="repo-help">
+              <span>Try <button type="button" class="text-button example-repo" data-repo="cli/cli">cli/cli</button> or <button type="button" class="text-button example-repo" data-repo="ollama/ollama">ollama/ollama</button></span>
+              <span class="secure-note">Fetched locally in your browser</span>
+            </div>
+          </form>
+        </section>
+
+        <div class="notice" id="notice" role="alert" hidden>
+          <span class="notice-icon" aria-hidden="true">!</span>
+          <span id="notice-text"></span>
+          <button id="dismiss-notice" type="button" aria-label="Dismiss message">×</button>
+        </div>
+
+        <section class="dashboard" aria-label="Release analytics dashboard">
+          <div class="dashboard-head">
+            <div>
+              <div class="status-pill" id="status-pill">
+                <span class="status-dot"></span>
+                <span id="status-text">Sample data — enter a repo and press Load</span>
+              </div>
+              <h2 id="dashboard-title">4gray/iptvnator <span>/ sample</span></h2>
+            </div>
+
+            <div class="global-filters">
+              <label class="control-field" for="kind-select">
+                <span>Show</span>
+                <select id="kind-select">
+                  <option value="distributable">Installers + archives</option>
+                  <option value="installers">OS installers only</option>
+                  <option value="all">All files</option>
+                </select>
+              </label>
+              <label class="control-field scope-field" for="scope-select">
+                <span>Version scope</span>
+                <select id="scope-select">
+                  <option value="all">All versions</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="filter-summary">
+            <span class="hidden-pill" id="hidden-pill" hidden></span>
+            <button class="clear-scope" id="clear-scope" type="button" hidden>← All versions</button>
+          </div>
+
+          <section class="kpi-grid" id="kpi-grid" aria-label="Key metrics"></section>
+
+          <section class="panel version-panel" aria-labelledby="version-chart-title">
+            <div class="panel-head">
+              <div>
+                <div class="section-label">Adoption signal <span class="scope-badge" data-scope-label>All versions</span></div>
+                <h3 id="version-chart-title">Downloads by version</h3>
+              </div>
+              <div class="segmented" aria-label="Version chart sort order">
+                <button class="active" type="button" data-chart-sort="chronological">Timeline</button>
+                <button type="button" data-chart-sort="downloads">Downloads</button>
+              </div>
+            </div>
+            <div class="version-chart" id="version-chart" aria-label="Downloads by version bar chart"></div>
+            <div class="chart-axis"><span>0</span><span>Lifetime downloads</span></div>
+          </section>
+
+          <section class="breakdown-grid" aria-label="Download breakdowns">
+            <article class="panel breakdown-panel">
+              <div class="panel-head compact">
+                <div>
+                  <div class="section-label">Platform <span class="scope-badge" data-scope-label>All versions</span></div>
+                  <h3>Operating system</h3>
+                </div>
+              </div>
+              <div class="breakdown-list" id="os-breakdown"></div>
+            </article>
+
+            <article class="panel breakdown-panel">
+              <div class="panel-head compact">
+                <div>
+                  <div class="section-label">Build target <span class="scope-badge" data-scope-label>All versions</span></div>
+                  <h3>Architecture</h3>
+                </div>
+              </div>
+              <div class="breakdown-list" id="arch-breakdown"></div>
+            </article>
+
+            <article class="panel breakdown-panel">
+              <div class="panel-head compact">
+                <div>
+                  <div class="section-label">Packaging <span class="scope-badge" data-scope-label>All versions</span></div>
+                  <h3>File format</h3>
+                </div>
+              </div>
+              <div class="breakdown-list" id="format-breakdown"></div>
+            </article>
+          </section>
+
+          <section class="panel leaderboard-panel" aria-labelledby="leaderboard-title">
+            <div class="panel-head leaderboard-head">
+              <div>
+                <div class="section-label">Leaderboard <span class="scope-badge" data-scope-label>All versions</span></div>
+                <h3 id="leaderboard-title">Top assets</h3>
+              </div>
+              <div class="leaderboard-tools">
+                <label class="search-field" for="asset-search">
+                  <span aria-hidden="true">⌕</span>
+                  <input id="asset-search" type="search" placeholder="Filter filename" autocomplete="off" aria-label="Filter assets by filename" />
+                </label>
+                <label class="row-limit" for="asset-limit">
+                  <span>Rows</span>
+                  <select id="asset-limit">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div class="filter-chips" id="os-filter-chips" aria-label="Filter assets by operating system"></div>
+            <div class="asset-table" id="asset-table"></div>
+          </section>
+
+          <section class="panel releases-panel" aria-labelledby="releases-title">
+            <div class="panel-head">
+              <div>
+                <div class="section-label">Release ledger <span>Global context</span></div>
+                <h3 id="releases-title">All releases</h3>
+              </div>
+              <p class="panel-note">Click a column to sort</p>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th><button type="button" data-release-sort="version">Version <span></span></button></th>
+                    <th><button type="button" data-release-sort="date">Published <span></span></button></th>
+                    <th>Assets</th>
+                    <th><button type="button" data-release-sort="downloads">Downloads <span></span></button></th>
+                    <th>Share</th>
+                  </tr>
+                </thead>
+                <tbody id="releases-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <footer>
+        <div class="footer-mark"><img src="./assets/icons/icon-192.png" alt="" width="28" height="28" /> Dropcount</div>
+        <p>
+          GitHub reports <code>download_count</code> as a lifetime cumulative total per asset. It does not provide day-by-day history, so per-version figures are totals-to-date—not a time series. The version chart is the closest available adoption signal.
+        </p>
+        <p class="footer-fineprint">Public API limit: 60 requests/hour per IP without a token, or 5,000/hour with one. Filename-based platform detection is best-effort.</p>
+      </footer>
+    </div>
+
+    <dialog class="token-dialog" id="token-dialog">
+      <form method="dialog" id="token-form">
+        <div class="dialog-head">
+          <div>
+            <div class="section-label">Optional authentication</div>
+            <h2>GitHub access token</h2>
+          </div>
+          <button class="dialog-close" id="token-close" type="button" aria-label="Close token dialog">×</button>
+        </div>
+        <p>
+          A fine-grained token with public-repository read access lifts the API limit from 60 to 5,000 calls per hour.
+        </p>
+        <label for="token-input">Token</label>
+        <input id="token-input" type="password" placeholder="github_pat_…" autocomplete="off" />
+        <p class="privacy-note">Stored only in this browser’s local storage. Never sent anywhere except GitHub’s API.</p>
+        <div class="dialog-actions">
+          <button class="danger-button" id="remove-token" type="button">Remove token</button>
+          <button class="primary-button" id="save-token" value="default" type="submit"><span>Save token</span><span>→</span></button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
