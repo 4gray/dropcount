@@ -14,7 +14,7 @@ python3 -m http.server 8000
 
 Then open `http://localhost:8000`.
 
-The app shows bundled sample data on first load and falls back to it if a live request fails because of a network or CORS problem.
+The app automatically loads the default repository on first launch. Bundled sample data remains available as an offline fallback if the live request fails because of a network or CORS problem.
 
 ## Project structure
 
@@ -26,6 +26,12 @@ The app shows bundled sample data on first load and falls back to it if a live r
 
 Every maintained source file is kept below 300 lines, and the app still runs directly as browser-native ES modules with no build step.
 
+Run the dependency-free test suite with:
+
+```sh
+npm test
+```
+
 ## Install as an app
 
 Dropcount includes a web app manifest, maskable icons, Apple touch icon, and an offline app shell. In a supported browser, use **Install app** or **Add to Home Screen** after opening the deployed site.
@@ -34,7 +40,7 @@ The dashboard and bundled sample data remain available offline. Loading live rep
 
 ## GitHub API limits and tokens
 
-Unauthenticated GitHub REST API access is limited to 60 requests per hour per IP address. An authenticated request allows 5,000 requests per hour. Dropcount displays the remaining and total request allowance reported by GitHub after each successful load.
+Unauthenticated GitHub REST API access is limited to 60 requests per hour per IP address. An authenticated request allows 5,000 requests per hour. Dropcount follows GitHub pagination to load repositories with more than 100 releases and displays the remaining and total request allowance after the final page.
 
 Select **Add token** in the header to enter an optional fine-grained GitHub token. Public-repository read access is sufficient. The token is stored only in your browser under `dropcount_token`, is sent only in the `Authorization` header to `api.github.com`, and is never placed in a URL or logged.
 
@@ -44,7 +50,9 @@ Do not add a token to this repository or hard-code it in `app.js`.
 
 GitHub’s `download_count` is a lifetime cumulative count for each release asset. The API does not expose day-by-day history. Accordingly, every figure in Dropcount is a total-to-date, and the downloads-by-version chart is an adoption comparison rather than a time series.
 
-Platform and architecture labels are inferred from filenames, so unusual naming schemes may appear as **Other** or **—**.
+Release tags are always accepted as GitHub provides them. SemVer embedded in tags such as `v1.2.3`, `app-v1.2.3-beta.2`, or `desktop-v2.0.0-rc.1` is used for version sorting and prerelease labels; unrecognized tag formats fall back to natural sorting and are never discarded.
+
+Platform and architecture labels are inferred from filenames, so unusual naming schemes may appear as **Other** or **—**. The version chart shows the latest 16 visible releases for readability; the version scope and release ledger contain the complete fetched set.
 
 ## Deploy to GitHub Pages
 

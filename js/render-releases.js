@@ -1,12 +1,13 @@
 import { $, $$, createElement, elements, state } from "./config.js";
 import { formatCompact, formatDate, formatExact, percent, releaseTotal } from "./data.js";
+import { compareVersionTags, releaseChannelLabel } from "./versions.js";
 
 export function renderReleases(releases) {
   const total = releases.reduce((sum, release) => sum + releaseTotal(release), 0);
   const sorted = [...releases].sort((a, b) => {
     let comparison = 0;
     if (state.releaseSort.key === "version") {
-      comparison = a.tag_name.localeCompare(b.tag_name, undefined, { numeric: true, sensitivity: "base" });
+      comparison = compareVersionTags(a.tag_name, b.tag_name);
     }
     if (state.releaseSort.key === "date") comparison = new Date(a.published_at) - new Date(b.published_at);
     if (state.releaseSort.key === "downloads") comparison = releaseTotal(a) - releaseTotal(b);
@@ -20,7 +21,11 @@ export function renderReleases(releases) {
     const row = document.createElement("tr");
     const versionCell = document.createElement("td");
     versionCell.append(createElement("span", "release-version", release.tag_name));
-    if (release.prerelease) versionCell.append(createElement("span", "prerelease-badge", "Pre"));
+    if (release.releaseChannel) {
+      versionCell.append(
+        createElement("span", "prerelease-badge", releaseChannelLabel(release.releaseChannel)),
+      );
+    }
 
     const downloadsCell = createElement("td", "", formatCompact(downloads));
     downloadsCell.title = formatExact(downloads);

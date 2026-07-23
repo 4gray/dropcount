@@ -1,4 +1,4 @@
-const CACHE_NAME = "dropcount-v1";
+const CACHE_NAME = "dropcount-v2";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -19,6 +19,7 @@ const APP_SHELL = [
   "./js/github.js",
   "./js/notices.js",
   "./js/parsers.js",
+  "./js/versions.js",
   "./js/render.js",
   "./js/render-assets.js",
   "./js/render-dashboard.js",

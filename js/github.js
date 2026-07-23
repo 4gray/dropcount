@@ -2,6 +2,15 @@ import { TOKEN_KEY } from "./config.js";
 
 export class GitHubError extends Error {}
 
+function nextPageUrl(linkHeader) {
+  if (!linkHeader) return null;
+  for (const part of linkHeader.split(",")) {
+    const match = part.match(/<([^>]+)>\s*;\s*rel="([^"]+)"/);
+    if (match?.[2].split(/\s+/).includes("next")) return match[1];
+  }
+  return null;
+}
+
 export function normalizeRepository(value) {
   let normalized = value.trim();
   normalized = normalized.replace(/^https?:\/\/(?:www\.)?github\.com\//i, "");
@@ -31,21 +40,30 @@ export async function fetchRepository(repo) {
   const token = getStoredToken();
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const response = await fetch(`https://api.github.com/repos/${repo}/releases?per_page=100`, { headers });
-  const rate = {
-    remaining: response.headers.get("x-ratelimit-remaining"),
-    limit: response.headers.get("x-ratelimit-limit"),
-  };
+  let url = `https://api.github.com/repos/${repo}/releases?per_page=100`;
+  let rate = null;
+  const releases = [];
 
-  if (!response.ok) {
-    if (response.status === 404) throw new GitHubError("Repo not found — check owner/repo");
-    if (response.status === 403) {
-      throw new GitHubError("GitHub rate limit reached — try later (or add a token)");
+  while (url) {
+    const response = await fetch(url, { headers });
+    rate = {
+      remaining: response.headers.get("x-ratelimit-remaining"),
+      limit: response.headers.get("x-ratelimit-limit"),
+    };
+
+    if (!response.ok) {
+      if (response.status === 404) throw new GitHubError("Repo not found — check owner/repo");
+      if (response.status === 403) {
+        throw new GitHubError("GitHub rate limit reached — try later (or add a token)");
+      }
+      throw new GitHubError(`GitHub error ${response.status}`);
     }
-    throw new GitHubError(`GitHub error ${response.status}`);
+
+    const page = await response.json();
+    if (!Array.isArray(page)) throw new GitHubError("GitHub returned an unexpected response");
+    releases.push(...page);
+    url = nextPageUrl(response.headers.get("link"));
   }
 
-  const releases = await response.json();
-  if (!Array.isArray(releases)) throw new GitHubError("GitHub returned an unexpected response");
   return { releases, rate };
 }

@@ -51,6 +51,9 @@ async function loadRepository(value) {
   state.loading = true;
   elements.loadButton.disabled = true;
   $("span", elements.loadButton).textContent = "Loading…";
+  elements.statusPill.classList.remove("live");
+  elements.statusText.textContent = `Loading ${repo}…`;
+  elements.dashboardTitle.textContent = repo;
 
   try {
     const { releases, rate } = await fetchRepository(repo);
@@ -185,6 +188,7 @@ function cacheElements() {
     statusPill: $("#status-pill"), statusText: $("#status-text"), dashboardTitle: $("#dashboard-title"),
     kindSelect: $("#kind-select"), scopeSelect: $("#scope-select"), hiddenPill: $("#hidden-pill"),
     clearScope: $("#clear-scope"), kpiGrid: $("#kpi-grid"), versionChart: $("#version-chart"),
+    chartCoverage: $("#chart-coverage"),
     osBreakdown: $("#os-breakdown"), archBreakdown: $("#arch-breakdown"), formatBreakdown: $("#format-breakdown"),
     osFilterChips: $("#os-filter-chips"), assetSearch: $("#asset-search"), assetLimit: $("#asset-limit"),
     assetTable: $("#asset-table"), releasesBody: $("#releases-body"), tokenTrigger: $("#token-trigger"),
@@ -203,6 +207,7 @@ function init() {
   bindTokenControls();
   updateTokenUI();
   setSampleData();
+  loadRepository(DEFAULT_REPOSITORY);
 }
 
 if ("serviceWorker" in navigator) {

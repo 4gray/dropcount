@@ -1,6 +1,8 @@
 import { $$, createElement, elements, OS_COLORS, PALETTE, state } from "./config.js";
 import { aggregate, formatCompact, formatDate, formatExact, percent, releaseTotal } from "./data.js";
 
+const VERSION_CHART_LIMIT = 16;
+
 export function renderStatus() {
   const isLive = state.source === "live";
   elements.statusPill.classList.toggle("live", isLive);
@@ -88,7 +90,10 @@ export function renderKPIs({ releases, scopedRelease, assets }) {
 export function renderVersionChart(releases) {
   let visible = [...releases]
     .sort((a, b) => new Date(b.published_at) - new Date(a.published_at))
-    .slice(0, 16);
+    .slice(0, VERSION_CHART_LIMIT);
+  elements.chartCoverage.textContent = releases.length > visible.length
+    ? `Latest ${visible.length} of ${releases.length} releases`
+    : `${visible.length} ${visible.length === 1 ? "release" : "releases"}`;
   visible = state.chartSort === "chronological"
     ? visible.sort((a, b) => new Date(a.published_at) - new Date(b.published_at))
     : visible.sort((a, b) => releaseTotal(b) - releaseTotal(a));

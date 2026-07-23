@@ -1,5 +1,6 @@
 import { state } from "./config.js";
 import { parseArch, parseFormat, parseKind, parseOS } from "./parsers.js";
+import { releaseChannel } from "./versions.js";
 
 export function prepareReleases(releases) {
   return releases
@@ -7,6 +8,7 @@ export function prepareReleases(releases) {
     .map((release) => ({
       ...release,
       published_at: release.published_at || release.created_at,
+      releaseChannel: releaseChannel(release),
       assets: (release.assets || []).map((asset) => {
         const format = parseFormat(asset.name || "");
         const os = parseOS(asset.name || "");
