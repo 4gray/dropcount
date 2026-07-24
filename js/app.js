@@ -95,6 +95,13 @@ function bindDataControls() {
     state.assetOS = "All";
     renderAll();
   });
+  elements.popularRelease.addEventListener("click", () => {
+    const tag = elements.popularRelease.dataset.tag;
+    if (!tag) return;
+    state.scope = state.scope === tag ? "all" : tag;
+    state.assetOS = "All";
+    renderAll();
+  });
 }
 
 function bindChartControls() {
@@ -187,7 +194,8 @@ function cacheElements() {
     notice: $("#notice"), noticeText: $("#notice-text"), dismissNotice: $("#dismiss-notice"),
     statusPill: $("#status-pill"), statusText: $("#status-text"), dashboardTitle: $("#dashboard-title"),
     kindSelect: $("#kind-select"), scopeSelect: $("#scope-select"), hiddenPill: $("#hidden-pill"),
-    clearScope: $("#clear-scope"), kpiGrid: $("#kpi-grid"), versionChart: $("#version-chart"),
+    clearScope: $("#clear-scope"), popularRelease: $("#popular-release"),
+    kpiGrid: $("#kpi-grid"), versionChart: $("#version-chart"),
     chartCoverage: $("#chart-coverage"),
     osBreakdown: $("#os-breakdown"), archBreakdown: $("#arch-breakdown"), formatBreakdown: $("#format-breakdown"),
     osFilterChips: $("#os-filter-chips"), assetSearch: $("#asset-search"), assetLimit: $("#asset-limit"),

@@ -42,6 +42,14 @@ export function releaseTotal(release) {
   return release.assets.reduce((sum, asset) => sum + asset.download_count, 0);
 }
 
+export function mostDownloadedRelease(releases) {
+  return [...releases].sort((left, right) => {
+    const downloads = releaseTotal(right) - releaseTotal(left);
+    if (downloads) return downloads;
+    return new Date(right.published_at) - new Date(left.published_at);
+  })[0] || null;
+}
+
 export function allAssets(releases) {
   return releases.flatMap((release) =>
     release.assets.map((asset) => ({ ...asset, releaseTag: release.tag_name })),

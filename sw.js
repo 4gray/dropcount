@@ -1,4 +1,4 @@
-const CACHE_NAME = "dropcount-v2";
+const CACHE_NAME = "dropcount-v3";
 const APP_SHELL = [
   "./",
   "./index.html",

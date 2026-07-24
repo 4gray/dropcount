@@ -1,5 +1,14 @@
 import { $$, createElement, elements, OS_COLORS, PALETTE, state } from "./config.js";
-import { aggregate, formatCompact, formatDate, formatExact, percent, releaseTotal } from "./data.js";
+import {
+  aggregate,
+  formatCompact,
+  formatDate,
+  formatExact,
+  mostDownloadedRelease,
+  percent,
+  releaseTotal,
+} from "./data.js";
+import { releaseChannelLabel } from "./versions.js";
 
 const VERSION_CHART_LIMIT = 16;
 
@@ -49,6 +58,74 @@ export function renderFilterSummary() {
   $$('[data-scope-label]').forEach((label) => {
     label.textContent = state.scope === "all" ? "All versions" : state.scope;
   });
+}
+
+export function renderPopularRelease(releases) {
+  const popular = mostDownloadedRelease(releases);
+  elements.popularRelease.hidden = !popular;
+  if (!popular) {
+    elements.popularRelease.replaceChildren();
+    return;
+  }
+
+  const downloads = releaseTotal(popular);
+  const allDownloads = releases.reduce((sum, release) => sum + releaseTotal(release), 0);
+  const share = percent(downloads, allDownloads);
+  const copy = createElement("span", "popular-release-copy");
+  const signal = createElement("span", "popular-release-signal");
+  signal.append(
+    createElement("span", "popular-release-pulse"),
+    document.createTextNode("Most downloaded release"),
+  );
+
+  const title = createElement("span", "popular-release-title");
+  title.append(createElement("strong", "", popular.tag_name));
+  if (popular.releaseChannel) {
+    title.append(
+      createElement("span", "prerelease-badge", releaseChannelLabel(popular.releaseChannel)),
+    );
+  }
+  copy.append(
+    signal,
+    title,
+    createElement(
+      "span",
+      "popular-release-meta",
+      `${formatDate(popular.published_at)} · ${popular.assets.length} distributable assets`,
+    ),
+  );
+
+  const stats = createElement("span", "popular-release-stats");
+  stats.append(
+    createElement("span", "popular-release-stat-label", "Lifetime downloads"),
+    createElement("strong", "", formatCompact(downloads)),
+    createElement(
+      "span",
+      "popular-release-exact",
+      `${formatExact(downloads)} exact · ${share.toFixed(1)}% of all downloads`,
+    ),
+  );
+  const shareTrack = createElement("span", "popular-release-share");
+  const shareFill = createElement("span", "");
+  shareFill.style.setProperty("--width", share);
+  shareTrack.append(shareFill);
+  stats.append(shareTrack);
+
+  const action = createElement("span", "popular-release-action");
+  action.append(
+    createElement("span", "", state.scope === popular.tag_name ? "Show all" : "Explore release"),
+    createElement("strong", "", state.scope === popular.tag_name ? "↙" : "↗"),
+  );
+
+  elements.popularRelease.dataset.tag = popular.tag_name;
+  elements.popularRelease.classList.toggle("is-selected", state.scope === popular.tag_name);
+  elements.popularRelease.setAttribute(
+    "aria-label",
+    `${popular.tag_name}, most downloaded release with ${formatExact(downloads)} downloads. ${
+      state.scope === popular.tag_name ? "Show all versions." : "Scope dashboard to this release."
+    }`,
+  );
+  elements.popularRelease.replaceChildren(copy, stats, action);
 }
 
 export function renderKPIs({ releases, scopedRelease, assets }) {

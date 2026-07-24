@@ -4,6 +4,7 @@ import {
   renderBreakdowns,
   renderFilterSummary,
   renderKPIs,
+  renderPopularRelease,
   renderScopeOptions,
   renderStatus,
   renderVersionChart,
@@ -18,6 +19,7 @@ export function renderAll() {
   renderScopeOptions(releases);
   const context = currentContext();
   renderFilterSummary();
+  renderPopularRelease(context.releases);
   renderKPIs(context);
   renderVersionChart(context.releases);
   renderBreakdowns(context.assets);

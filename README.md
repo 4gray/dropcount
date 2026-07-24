@@ -1,6 +1,6 @@
 # Dropcount
 
-Dropcount is a static, client-side dashboard for exploring lifetime download totals across any public GitHub repository’s releases. It derives platform, architecture, file format, and asset kind from release filenames, then turns the public GitHub API response into version charts, breakdowns, a top-assets leaderboard, and a sortable release ledger.
+Dropcount is a static, client-side dashboard for exploring lifetime download totals across any public GitHub repository’s releases. It derives platform, architecture, file format, and asset kind from release filenames, then turns the public GitHub API response into a most-downloaded release spotlight, version charts, breakdowns, a top-assets leaderboard, and a sortable release ledger.
 
 There is no backend, build step, or embedded API key. Open `index.html` through any static file server and enter a repository as `owner/repo` or paste its GitHub URL.
 
